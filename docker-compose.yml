@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  gp-delivery-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gp-delivery:latest
+    container_name: gp-delivery-container
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - gp-network
+
+networks:
+  gp-network:
+    driver: bridge
