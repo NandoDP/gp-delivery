@@ -13,7 +13,7 @@ Application web moderne de service de livraison construite avec Next.js, Docker 
 
 1. Cloner le repository
 ```bash
-git clone https://github.com/votre-username/gp-delivery.git
+git clone https://github.com/NandoDP/gp-delivery.git
 cd gp-delivery
 ```
 
@@ -44,12 +44,14 @@ docker-compose up -d
 ```
 
 ## 📦 Structure du Projet
+```
 gp-delivery/
 ├── src/app/          # Code source Next.js
 ├── public/           # Fichiers statiques
 ├── Dockerfile        # Configuration Docker
 ├── Jenkinsfile       # Pipeline CI/CD
 └── docker-compose.yml
+```
 
 ## 🔧 Configuration Jenkins
 
