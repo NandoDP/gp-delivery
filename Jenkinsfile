@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'gp-delivery'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        DOCKERHUB_REPO = 'votre-username/gp-delivery'
+        DOCKERHUB_REPO = 'nandodp/gp-delivery'
     }
     
     stages {
@@ -18,7 +18,7 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                echo 'Construction de l\'image Docker...'
+                echo "Construction de l'image Docker..."
                 script {
                     docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                     docker.build("${DOCKER_IMAGE}:latest")
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo 'Exécution des tests...'
                 script {
-                    // Optionnel: Ajouter vos tests ici
+                    // tests ici
                     sh 'echo "Tests passed"'
                 }
             }
