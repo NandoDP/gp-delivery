@@ -20,8 +20,9 @@ pipeline {
             steps {
                 echo "Construction de l'image Docker..."
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                    docker.build("${DOCKER_IMAGE}:latest")
+                    // Construction directement avec le nom complet du repository
+                    docker.build("${DOCKERHUB_REPO}:${DOCKER_TAG}")
+                    docker.build("${DOCKERHUB_REPO}:latest")
                 }
             }
         }
@@ -40,10 +41,12 @@ pipeline {
             steps {
                 echo 'Push de l\'image vers Docker Hub...'
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-                        docker.image("${DOCKER_IMAGE}:latest").push()
-                    }
+                    // Connexion à Docker Hub
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                    
+                    // Push des images
+                    sh "docker push ${DOCKERHUB_REPO}:${DOCKER_TAG}"
+                    sh "docker push ${DOCKERHUB_REPO}:latest"
                 }
             }
         }
@@ -52,15 +55,15 @@ pipeline {
             steps {
                 echo 'Déploiement de l\'application...'
                 script {
-                    sh '''
+                    sh """
                         docker stop gp-delivery-container || true
                         docker rm gp-delivery-container || true
                         docker run -d \
                             --name gp-delivery-container \
                             -p 3000:3000 \
                             --restart unless-stopped \
-                            ${DOCKER_IMAGE}:latest
-                    '''
+                            ${DOCKERHUB_REPO}:latest
+                    """
                 }
             }
         }
@@ -76,6 +79,8 @@ pipeline {
         always {
             echo 'Nettoyage des images Docker non utilisées...'
             sh 'docker image prune -f'
+            // Déconnexion de Docker Hub
+            sh 'docker logout'
         }
     }
 }
